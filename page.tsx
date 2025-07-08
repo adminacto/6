@@ -411,6 +411,7 @@ export default function ActogramChat() {
     const savedUser = localStorage.getItem("actogram_user")
     if (savedUser) {
       const user = JSON.parse(savedUser)
+      console.log("🔍 Загружен пользователь из localStorage:", user)
       setCurrentUser(user)
       setIsAuthenticated(true)
     }
@@ -539,6 +540,8 @@ export default function ActogramChat() {
         return
       }
 
+      console.log("🔍 Ответ сервера при аутентификации:", data)
+      
       const user: User = {
         id: data.user.id,
         username: data.user.username,
@@ -552,6 +555,8 @@ export default function ActogramChat() {
         status: "online",
       }
 
+      console.log("🔍 Созданный пользователь:", user)
+      
       setCurrentUser(user)
       setIsAuthenticated(true)
       setSuccess(isLoginMode ? "Успешный вход!" : "Регистрация завершена!")
@@ -593,6 +598,14 @@ export default function ActogramChat() {
   }
 
   const sendMessage = () => {
+    console.log("🔍 Отладка sendMessage:", {
+      currentUser: currentUser,
+      currentUserId: currentUser?.id,
+      selectedChat: selectedChat,
+      newMessage: newMessage.trim(),
+      socketRef: !!socketRef.current
+    })
+    
     if (!newMessage.trim() || !selectedChat || !currentUser || !socketRef.current) {
       console.log("❌ Не удается отправить сообщение:", {
         hasMessage: !!newMessage.trim(),

@@ -459,6 +459,8 @@ app.post("/api/auth", authLimiter, async (req, res) => {
       const token = jwt.sign({ userId: user._id, email: user.email, username: user.username }, JWT_SECRET, { expiresIn: "30d" })
       const userResponse = user.toObject()
       delete userResponse.password
+      // Добавляем поле id для совместимости с клиентом
+      userResponse.id = user._id.toString()
       res.json({
         success: true,
         message: "Регистрация успешна",
@@ -482,6 +484,8 @@ app.post("/api/auth", authLimiter, async (req, res) => {
       const token = jwt.sign({ userId: user._id, email: user.email, username: user.username }, JWT_SECRET, { expiresIn: "30d" })
       const userResponse = user.toObject()
       delete userResponse.password
+      // Добавляем поле id для совместимости с клиентом
+      userResponse.id = user._id.toString()
       res.json({
         success: true,
         message: "Вход выполнен успешно",
@@ -585,7 +589,10 @@ io.use(async (socket, next) => {
         }
 
         socket.userId = user._id.toString()
-        socket.user = user
+        socket.user = {
+          ...user,
+          id: user._id.toString() // Добавляем поле id для совместимости
+        }
         next()
       } catch (error) {
         console.error("Socket auth error:", error)
